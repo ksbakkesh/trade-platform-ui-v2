@@ -1,0 +1,51 @@
+@import "tailwindcss";
+
+*, *::before, *::after { box-sizing: border-box; }
+
+html, body {
+  min-height: 100vh;
+  margin: 0;
+  padding: 0;
+  background-color: #0a0e1a;
+  color: #f9fafb;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  font-size: 15px;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+.card {
+  background: #111827;
+  border: 1px solid rgba(255,255,255,0.08);
+  border-radius: 12px;
+  padding: 16px;
+}
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 2px 8px;
+  border-radius: 999px;
+  font-size: 11px;
+  font-weight: 600;
+}
+.badge-green  { background: rgba(16,185,129,0.15); color: #10b981; }
+.badge-red    { background: rgba(239,68,68,0.15);  color: #ef4444; }
+.badge-amber  { background: rgba(245,158,11,0.15); color: #f59e0b; }
+.badge-blue   { background: rgba(59,130,246,0.15); color: #60a5fa; }
+.badge-purple { background: rgba(139,92,246,0.15); color: #a78bfa; }
+.badge-muted  { background: rgba(107,114,128,0.15); color: #9ca3af; }
+
+.text-data   { color: #f9fafb !important; }
+.text-muted  { color: #6b7280 !important; }
+.text-accent { color: #10b981 !important; }
+.text-loss   { color: #ef4444 !important; }
+.text-warn   { color: #f59e0b !important; }
+.bg-surface   { background: #111827 !important; }
+.bg-surface-2 { background: #1f2937 !important; }
+.bg-accent    { background: #10b981 !important; }
+.text-bg      { color: #0a0e1a !important; }
+
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: #374151; border-radius: 4px; }
