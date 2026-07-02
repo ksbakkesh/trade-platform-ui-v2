@@ -1,5 +1,5 @@
 'use client'
-import { useState, useCallback } from 'react'
+import { useState, useCallback, useEffect } from 'react'
 import { RefreshCw } from 'lucide-react'
 import RiskGauge from '@/components/ui/RiskGauge'
 import PnlChart from '@/components/ui/PnlChart'
@@ -18,6 +18,21 @@ export default function Dashboard() {
   const [sensexOpen, setSensexOpen] = useState('')
   const [loading, setLoading] = useState(false)
   const [lastRefresh, setLastRefresh] = useState<string | null>(null)
+
+  // Auto-load today's open prices from DB
+  useEffect(() => {
+    const loadOpenPrices = async () => {
+      try {
+        const res = await fetch(`${API}/api/open-price/today`, { headers: getAuthHeaders() })
+        if (res.ok) {
+          const data = await res.json()
+          if (data.nifty?.openPrice) setNiftyOpen(String(data.nifty.openPrice))
+          if (data.sensex?.openPrice) setSensexOpen(String(data.sensex.openPrice))
+        }
+      } catch {}
+    }
+    loadOpenPrices()
+  }, [])
   const [risk, setRisk] = useState<RiskSummary | null>(null)
   const [trades, setTrades] = useState<Trade[]>([])
   const [positions, setPositions] = useState<Position[]>([])
