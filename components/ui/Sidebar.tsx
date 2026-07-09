@@ -4,7 +4,7 @@ import { usePathname } from 'next/navigation'
 import { useAuth } from '@/lib/auth'
 import {
   LayoutDashboard, TrendingUp, Activity, BarChart2, ClipboardList,
-  BookOpen, Shield, Wallet, Settings, Users, Globe, ScrollText,
+  BookOpen, Shield, Wallet, Settings, Users, Globe, ScrollText, Zap,
   FileBarChart, Plug, LogOut, ChevronRight
 } from 'lucide-react'
 
@@ -18,6 +18,7 @@ const NAV = [
   { href: '/risk',     label: 'Risk Management',   icon: Shield,          perm: 'riskManagement' },
   { href: '/funds',    label: 'Funds & Margin',    icon: Wallet,          perm: 'fundsMargin' },
   { href: '/broker',   label: 'Broker Setup',      icon: Plug,            perm: 'brokerSetup' },
+  { href: '/strategy', label: 'Strategy Setup',    icon: Zap,             perm: 'dashboard' },
   { href: '/settings', label: 'Strategy Settings', icon: Settings,        perm: 'strategySettings' },
   { href: '/config',   label: 'Configuration',     icon: BookOpen,        perm: 'configuration' },
   { href: '/logs',     label: 'Logs',              icon: ScrollText,      perm: 'logs' },
