@@ -31,7 +31,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
       } catch {}
     }
     fetchLtp()
-    const t = setInterval(fetchLtp, 60000)
+    const t = setInterval(fetchLtp, 300000)
     return () => clearInterval(t)
   }, [])
 

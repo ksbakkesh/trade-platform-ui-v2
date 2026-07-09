@@ -50,17 +50,22 @@ export default function Dashboard() {
   const refresh = useCallback(async () => {
     setLoading(true)
     try {
-      await fetch(`${API}/api/test/angelone/login`, { method: 'POST' })
+      
       const [riskData, tradesData, posData, fundsData] = await Promise.allSettled([
         api.riskSummary(), api.todayTrades(), api.positions(),
-        fetch(`${API}/api/test/angelone/funds`).then(r => r.json()),
+        fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() })
+          .then(r => r.json())
+          .catch(() => 
+            new Promise(resolve => setTimeout(resolve, 2000))
+              .then(() => fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()))
+          ),
       ])
       if (riskData.status === 'fulfilled') setRisk(riskData.value)
       if (tradesData.status === 'fulfilled') setTrades(tradesData.value)
       if (posData.status === 'fulfilled') setPositions(posData.value)
-      if (fundsData.status === 'fulfilled') setFunds(fundsData.value)
+      if (fundsData.status === 'fulfilled' && fundsData.value?.availablecash) setFunds(fundsData.value)
       try {
-        const q = await fetch(`${API}/api/test/angelone/quote?exchange=NSE&token=99926000&mode=LTP`).then(r => r.json())
+        const q = await fetch(`${API}/api/dashboard/quote?exchange=NSE&token=26000&mode=LTP`, { headers: getAuthHeaders() }).then(r => r.json())
         if (q.fetched?.[0]?.ltp) setNiftyLtp(q.fetched[0].ltp)
       } catch {}
       if (niftyOpen && parseFloat(niftyOpen) > 1000) {
@@ -222,14 +227,14 @@ export default function Dashboard() {
                 </tr>
               </thead>
               <tbody>
-                {positions.map(p => (
-                  <tr key={p.positionId} className="border-b border-white/5 last:border-0">
-                    <td className="py-2 pr-3 font-mono text-data text-[11px]">{p.tradingSymbol}</td>
-                    <td className="py-2 pr-3 font-mono">{p.quantityRemaining}</td>
-                    <td className="py-2 pr-3 font-mono">{p.currentLtp ? `₹${p.currentLtp}` : '—'}</td>
-                    <td className="py-2 pr-3 font-mono text-loss">₹{p.currentStopLoss}</td>
-                    <td className={`py-2 pr-3 font-mono font-medium ${(p.unrealizedPnl ?? 0) >= 0 ? 'text-accent' : 'text-loss'}`}>
-                      {p.unrealizedPnl != null ? `${p.unrealizedPnl >= 0 ? '+' : ''}₹${Math.abs(p.unrealizedPnl).toLocaleString('en-IN')}` : '—'}
+                {positions.map((p, i) => (
+                  <tr key={i} className="border-b border-white/5 last:border-0">
+                    <td className="py-2 pr-3 font-mono text-data text-[11px]">{p.tradingsymbol || p.tradingSymbol}</td>
+                    <td className="py-2 pr-3 font-mono">{p.netqty ?? p.quantityRemaining}</td>
+                    <td className="py-2 pr-3 font-mono">{p.ltp ? `₹${parseFloat(p.ltp).toLocaleString('en-IN')}` : p.currentLtp ? `₹${p.currentLtp}` : '—'}</td>
+                    <td className="py-2 pr-3 font-mono text-loss">{p.currentStopLoss ? `₹${p.currentStopLoss}` : '—'}</td>
+                    <td className={`py-2 pr-3 font-mono font-medium ${parseFloat(p.unrealised ?? p.unrealizedPnl ?? '0') >= 0 ? 'text-accent' : 'text-loss'}`}>
+                      {p.unrealised != null ? `${parseFloat(p.unrealised) >= 0 ? '+' : ''}₹${Math.abs(parseFloat(p.unrealised)).toLocaleString('en-IN')}` : p.unrealizedPnl != null ? `${p.unrealizedPnl >= 0 ? '+' : ''}₹${Math.abs(p.unrealizedPnl).toLocaleString('en-IN')}` : '—'}
                     </td>
                     <td className="py-2">{p.slMovedToCost ? <span className="badge badge-amber">SL → Cost</span> : <span className="badge badge-muted">Normal</span>}</td>
                   </tr>

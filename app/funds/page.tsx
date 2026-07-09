@@ -24,7 +24,7 @@ export default function FundsPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch(`${API}/api/test/angelone/funds`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         setFunds(data)

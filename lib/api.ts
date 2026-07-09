@@ -83,7 +83,7 @@ export interface StrategySettings {
 export const api = {
   riskSummary: () => get<RiskSummary>(`/api/dashboard/risk/summary?accountId=${getAccountId()}`),
   todayTrades: () => get<Trade[]>(`/api/dashboard/trades/today?accountId=${getAccountId()}`),
-  positions:   () => get<Position[]>(`/api/dashboard/positions?accountId=${getAccountId()}`),
+  positions:   () => get<Position[]>(`/api/dashboard/live-positions`),
   gannLevels:  (index: string, openPrice: number) =>
     get<GannLevels>(`/api/dashboard/market/levels?accountId=${getAccountId()}&index=${index}&liveOpenPrice=${openPrice}`),
   strategySettings: (index: string) =>
