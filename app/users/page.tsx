@@ -17,6 +17,7 @@ const TABS = [
   { key: 'riskManagement',   label: 'Risk Management' },
   { key: 'fundsMargin',      label: 'Funds & Margin' },
   { key: 'brokerSetup',      label: 'Broker Setup' },
+  { key: 'strategySetup',    label: 'Strategy Setup' },
   { key: 'strategySettings', label: 'Strategy Settings' },
   { key: 'configuration',    label: 'Configuration' },
   { key: 'logs',             label: 'Logs' },
@@ -28,7 +29,7 @@ const DEFAULT_USER_PERMS = {
   dashboard: true, marketOverview: false, liveSignals: true,
   positions: true, tradeHistory: true, orders: false,
   riskManagement: true, fundsMargin: false, brokerSetup: false,
-  strategySettings: false, configuration: false, logs: false,
+  strategySetup: true, strategySettings: false, configuration: false, logs: false,
   reports: false, userManagement: false,
 }
 
