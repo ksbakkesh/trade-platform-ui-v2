@@ -41,10 +41,10 @@ export default function Dashboard() {
   const [niftyLtp, setNiftyLtp] = useState<number | null>(null)
   const [funds, setFunds] = useState<any>(null)
   const [pnlHistory] = useState([
-    { time: '09:15', pnl: 0 }, { time: '09:30', pnl: 120 },
-    { time: '09:45', pnl: -200 }, { time: '10:00', pnl: 350 },
-    { time: '10:15', pnl: 800 }, { time: '10:30', pnl: 650 },
-    { time: '10:45', pnl: 1200 }, { time: '11:00', pnl: 950 },
+    { date: '09:15', pnl: 0 }, { date: '09:30', pnl: 120 },
+    { date: '09:45', pnl: -200 }, { date: '10:00', pnl: 350 },
+    { date: '10:15', pnl: 800 }, { date: '10:30', pnl: 650 },
+    { date: '10:45', pnl: 1200 }, { date: '11:00', pnl: 950 },
   ])
 
   const refresh = useCallback(async () => {
@@ -233,7 +233,7 @@ export default function Dashboard() {
                     <td className="py-2 pr-3 font-mono">{p.netqty ?? p.quantityRemaining}</td>
                     <td className="py-2 pr-3 font-mono">{p.ltp ? `₹${parseFloat(p.ltp).toLocaleString('en-IN')}` : p.currentLtp ? `₹${p.currentLtp}` : '—'}</td>
                     <td className="py-2 pr-3 font-mono text-loss">{p.currentStopLoss ? `₹${p.currentStopLoss}` : '—'}</td>
-                    <td className={`py-2 pr-3 font-mono font-medium ${parseFloat(p.unrealised ?? p.unrealizedPnl ?? '0') >= 0 ? 'text-accent' : 'text-loss'}`}>
+                    <td className={`py-2 pr-3 font-mono font-medium ${parseFloat(String(p.unrealised ?? p.unrealizedPnl ?? '0')) >= 0 ? 'text-accent' : 'text-loss'}`}>
                       {p.unrealised != null ? `${parseFloat(p.unrealised) >= 0 ? '+' : ''}₹${Math.abs(parseFloat(p.unrealised)).toLocaleString('en-IN')}` : p.unrealizedPnl != null ? `${p.unrealizedPnl >= 0 ? '+' : ''}₹${Math.abs(p.unrealizedPnl).toLocaleString('en-IN')}` : '—'}
                     </td>
                     <td className="py-2">{p.slMovedToCost ? <span className="badge badge-amber">SL → Cost</span> : <span className="badge badge-muted">Normal</span>}</td>

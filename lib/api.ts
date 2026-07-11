@@ -50,15 +50,20 @@ export interface Trade {
 }
 
 export interface Position {
-  positionId: number
-  tradeId: number
-  tradingSymbol: string
-  quantityRemaining: number
-  currentLtp: number | null
-  currentStopLoss: number
-  unrealizedPnl: number | null
-  slMovedToCost: boolean
-  lastUpdatedAt: string
+  positionId?: number
+  tradeId?: number
+  tradingSymbol?: string
+  quantityRemaining?: number
+  currentLtp?: number | null
+  currentStopLoss?: number
+  unrealizedPnl?: number | null
+  slMovedToCost?: boolean
+  lastUpdatedAt?: string
+  // Raw broker fields returned by /api/dashboard/live-positions
+  tradingsymbol?: string
+  netqty?: string
+  ltp?: string
+  unrealised?: string
 }
 
 export interface GannLevels {

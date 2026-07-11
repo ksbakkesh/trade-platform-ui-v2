@@ -21,7 +21,7 @@ export default function PnlChart({ data }: Props) {
           tickFormatter={v => `₹${v}`} />
         <Tooltip
           contentStyle={{ background: '#111827', border: '1px solid rgba(255,255,255,0.08)', borderRadius: 8, fontSize: 11 }}
-          formatter={(v: number) => [`₹${v}`, 'P&L']} />
+          formatter={(v) => [`₹${v}`, 'P&L']} />
         <Line type="monotone" dataKey="pnl" stroke="#10b981" strokeWidth={2} dot={false} />
       </LineChart>
     </ResponsiveContainer>
