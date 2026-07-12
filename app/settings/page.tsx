@@ -95,7 +95,6 @@ export default function StrategySettingsPage() {
           method: 'PATCH',
           headers: { ...getAuthHeaders() }
         })
-        fetchSettings()
       }
     } catch {}
   }
