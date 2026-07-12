@@ -5,11 +5,6 @@ import { Save, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
-function getAccountId() {
-  if (typeof window === 'undefined') return 1
-  return parseInt(localStorage.getItem('tp_broker') || '1')
-}
-
 interface Settings {
   id: number
   indexName: string
@@ -52,6 +47,7 @@ export default function StrategySettingsPage() {
   const [nifty, setNifty] = useState<Settings | null>(null)
   const [sensex, setSensex] = useState<Settings | null>(null)
   const [loading, setLoading] = useState(true)
+  const [accountId, setAccountId] = useState<number>(1)
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
@@ -64,10 +60,15 @@ export default function StrategySettingsPage() {
   const fetchSettings = async () => {
     setLoading(true)
     try {
-      const accountId = getAccountId()
+      let accId = accountId
+      try {
+        const brokerRes = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
+        if (brokerRes.ok) { const b = await brokerRes.json(); accId = b.id; setAccountId(b.id) }
+      } catch {}
+      const accountId = accId
       const [n, s] = await Promise.all([
-        fetch(`${API}/admin/strategy-settings/account/${accountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/admin/strategy-settings/account/${accountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       setNifty(n)
       setSensex(s)
@@ -83,9 +84,9 @@ export default function StrategySettingsPage() {
   const calculateGann = async () => {
     if (!weeklyOpenPrice || parseFloat(weeklyOpenPrice) < 1000) return
     try {
-      const accountId = getAccountId()
+      const accId = accountId
       // Calculate Gann levels
-      const res = await fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/api/dashboard/market/levels?accountId=${accId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() }).then(r => { console.log('levels status:', r.status); return r })
       if (res.ok) setGannLevels(await res.json())
 
       // Save open price to strategy settings
@@ -105,7 +106,7 @@ export default function StrategySettingsPage() {
     setError(''); setSuccess(''); setSaving(true)
     try {
       const payload = {
-        brokerAccountId: getAccountId(),
+        brokerAccountId: accountId,
         indexName: current.indexName,
         openPriceMode: 'AUTO',
         premiumThreshold: current.premiumThreshold,
@@ -124,7 +125,7 @@ export default function StrategySettingsPage() {
         fixedLots: current.fixedLots,
         autoTradingEnabled: current.autoTradingEnabled,
       }
-      const res = await fetch(`${API}/admin/strategy-settings/${current.id}`, {
+      const res = await fetch(`${API}/api/admin/strategy-settings/${current.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(payload)
