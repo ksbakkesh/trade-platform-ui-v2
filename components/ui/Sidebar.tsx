@@ -31,6 +31,7 @@ export default function Sidebar({ onClose }: { onClose?: () => void }) {
   const { user, permissions, logout } = useAuth()
 
   const visibleNav = NAV.filter(item => {
+    if (user?.role === 'ADMIN') return true
     const perm = item.perm as keyof typeof permissions
     return permissions[perm] === true
   })
