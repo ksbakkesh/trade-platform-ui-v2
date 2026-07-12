@@ -1,17 +1,14 @@
 'use client'
 import { useState, useEffect, useCallback } from 'react'
 import { getAuthHeaders } from '@/lib/auth'
-import { Wallet, Zap, RefreshCw, CheckCircle, AlertCircle, Settings } from 'lucide-react'
+import { Wallet, Zap, RefreshCw, CheckCircle, AlertCircle } from 'lucide-react'
 
 const API = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8080'
 
 export default function StrategySetupPage() {
   const [funds, setFunds] = useState<any>(null)
-  const [niftyLevels, setNiftyLevels] = useState<any>(null)
-  const [sensexLevels, setSensexLevels] = useState<any>(null)
   const [niftySettings, setNiftySettings] = useState<any>(null)
   const [sensexSettings, setSensexSettings] = useState<any>(null)
-  const [openPrice, setOpenPrice] = useState('')
   const [capital, setCapital] = useState('')
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
@@ -45,18 +42,6 @@ export default function StrategySetupPage() {
   }, [])
 
   useEffect(() => { loadData() }, [loadData])
-
-  const calculateLevels = async () => {
-    if (!openPrice || parseFloat(openPrice) < 1000) return
-    try {
-      const [n, s] = await Promise.all([
-        fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=NIFTY&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
-        fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=SENSEX&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
-      ])
-      if (n.buyAbove) setNiftyLevels(n)
-      if (s.buyAbove) setSensexLevels(s)
-    } catch {}
-  }
 
   const activateStrategy = async () => {
     if (!capital || parseFloat(capital) < 1000) {
@@ -187,30 +172,6 @@ export default function StrategySetupPage() {
               </button>
             ))}
           </div>
-        )}
-      </div>
-
-      <div className="card space-y-4">
-        <div className="flex items-center gap-2">
-          <Settings size={14} className="text-muted" />
-          <h2 className="text-data text-sm font-semibold">Today's Gann Levels</h2>
-        </div>
-        <div className="flex gap-3">
-          <input type="number" value={openPrice} onChange={e => setOpenPrice(e.target.value)}
-            placeholder="Enter 9:15 AM open price (e.g. 24000)"
-            className="flex-1 bg-surface-2 border border-white/10 rounded-lg px-3 py-2.5 text-data font-mono text-sm focus:outline-none focus:border-accent/50" />
-          <button onClick={calculateLevels} disabled={!openPrice}
-            className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 border border-white/10 text-data text-sm hover:border-accent/40 transition-colors disabled:opacity-40">
-            <RefreshCw size={12} />Calculate
-          </button>
-        </div>
-        {(niftyLevels || sensexLevels) ? (
-          <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-            {niftyLevels && <LevelsCard index="NIFTY 50" levels={niftyLevels} color="text-blue-400" />}
-            {sensexLevels && <LevelsCard index="SENSEX" levels={sensexLevels} color="text-purple-400" />}
-          </div>
-        ) : (
-          <p className="text-center py-4 text-muted text-xs">Enter the 9:15 AM opening price and click Calculate</p>
         )}
       </div>
 

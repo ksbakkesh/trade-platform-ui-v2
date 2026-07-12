@@ -55,6 +55,8 @@ export default function StrategySettingsPage() {
   const [saving, setSaving] = useState(false)
   const [error, setError] = useState('')
   const [success, setSuccess] = useState('')
+  const [weeklyOpenPrice, setWeeklyOpenPrice] = useState('')
+  const [gannLevels, setGannLevels] = useState<any>(null)
 
   const current = activeTab === 'NIFTY' ? nifty : sensex
   const setCurrent = activeTab === 'NIFTY' ? setNifty : setSensex
@@ -77,6 +79,15 @@ export default function StrategySettingsPage() {
   }
 
   useEffect(() => { fetchSettings() }, [])
+
+  const calculateGann = async () => {
+    if (!weeklyOpenPrice || parseFloat(weeklyOpenPrice) < 1000) return
+    try {
+      const accountId = getAccountId()
+      const res = await fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() })
+      if (res.ok) setGannLevels(await res.json())
+    } catch {}
+  }
 
   const handleSave = async () => {
     if (!current) return
@@ -148,7 +159,7 @@ export default function StrategySettingsPage() {
       {/* Tabs */}
       <div className="flex gap-2">
         {(['NIFTY', 'SENSEX'] as const).map(tab => (
-          <button key={tab} onClick={() => { setActiveTab(tab); setSuccess(''); setError('') }}
+          <button key={tab} onClick={() => { setActiveTab(tab); setSuccess(''); setError(''); setGannLevels(null); setWeeklyOpenPrice('') }}
             className={`px-4 py-2 rounded-lg text-sm font-medium transition-colors ${
               activeTab === tab
                 ? 'bg-accent text-bg'
@@ -176,6 +187,48 @@ export default function StrategySettingsPage() {
                 <span className={`absolute top-0.5 left-0.5 w-5 h-5 rounded-full bg-white shadow transition-transform ${current.autoTradingEnabled ? 'translate-x-5' : ''}`} />
               </button>
             </div>
+          </div>
+
+
+          {/* Weekly Gann Levels */}
+          <div className="card space-y-4">
+            <div>
+              <h3 className="text-data text-sm font-semibold">Weekly Open Price & Gann Levels</h3>
+              <p className="text-muted text-xs mt-0.5">Enter Monday 9:15 AM open price — auto-calculates CE/PE strikes for the week</p>
+            </div>
+            <div className="flex gap-3">
+              <div className="relative flex-1">
+                <span className="absolute left-3 top-1/2 -translate-y-1/2 text-muted text-sm">₹</span>
+                <input
+                  type="number"
+                  value={weeklyOpenPrice}
+                  onChange={e => setWeeklyOpenPrice(e.target.value)}
+                  placeholder={activeTab === 'NIFTY' ? 'e.g. 24000' : 'e.g. 80000'}
+                  className="w-full bg-surface-2 border border-white/10 rounded-lg pl-7 pr-3 py-2.5 text-data font-mono text-sm focus:outline-none focus:border-accent/50"
+                />
+              </div>
+              <button onClick={calculateGann} disabled={!weeklyOpenPrice}
+                className="flex items-center gap-2 px-4 py-2.5 rounded-lg bg-surface-2 border border-white/10 text-data text-sm hover:border-accent/40 transition-colors disabled:opacity-40">
+                <RefreshCw size={12} />Calculate
+              </button>
+            </div>
+            {gannLevels && (
+              <div className="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                {[
+                  { label: 'Buy Above', value: gannLevels.buyAbove, cls: 'text-accent' },
+                  { label: 'Sell Below', value: gannLevels.sellBelow, cls: 'text-loss' },
+                  { label: 'CE Strike', value: gannLevels.ceStrike, cls: 'text-accent' },
+                  { label: 'PE Strike', value: gannLevels.peStrike, cls: 'text-loss' },
+                ].map(item => (
+                  <div key={item.label} className="p-3 rounded-lg bg-surface-2 text-center">
+                    <p className="text-muted text-[10px] uppercase tracking-wider">{item.label}</p>
+                    <p className={`font-mono font-bold text-sm mt-1 ${item.cls}`}>
+                      {parseFloat(item.value).toLocaleString('en-IN')}
+                    </p>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
 
           {/* Entry Conditions */}
