@@ -21,7 +21,7 @@ export default function TopBar({ onMenuClick }: { onMenuClick: () => void }) {
   useEffect(() => {
     const fetchLtp = async () => {
       try {
-        const res = await fetch(`${API}/api/test/angelone/quote?exchange=NSE&token=99926000&mode=LTP`, {
+        const res = await fetch(`${API}/test/angelone/quote?exchange=NSE&token=99926000&mode=LTP`, {
           headers: getAuthHeaders()
         })
         if (res.ok) {

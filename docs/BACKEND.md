@@ -25,56 +25,56 @@ com.tradingplatform/
 
 ## Key Endpoints
 ```
-POST /api/auth/login              — email+password → JWT token
-POST /api/auth/register           — create user
-PUT  /api/auth/profile            — update own profile (ADMIN)
-POST /api/auth/change-password    — change password (all users)
-DELETE /api/auth/users/{id}       — delete user
+POST /auth/login              — email+password → JWT token
+POST /auth/register           — create user
+PUT  /auth/profile            — update own profile (ADMIN)
+POST /auth/change-password    — change password (all users)
+DELETE /auth/users/{id}       — delete user
 
-GET  /api/broker/my-account       — get own broker account
-POST /api/broker/connect/angel-one — connect own broker
-POST /api/broker/test-connection  — test own broker
+GET  /broker/my-account       — get own broker account
+POST /broker/connect/angel-one — connect own broker
+POST /broker/test-connection  — test own broker
 
-GET  /api/admin/users             — list all users
-PUT  /api/admin/users/{id}        — edit user
-GET  /api/admin/broker/{userId}   — get user's broker (admin)
-POST /api/admin/broker/{userId}/connect  — connect broker for user
-POST /api/admin/broker/{userId}/test     — test user's connection
-DELETE /api/admin/broker/{userId}/disconnect
+GET  /admin/users             — list all users
+PUT  /admin/users/{id}        — edit user
+GET  /admin/broker/{userId}   — get user's broker (admin)
+POST /admin/broker/{userId}/connect  — connect broker for user
+POST /admin/broker/{userId}/test     — test user's connection
+DELETE /admin/broker/{userId}/disconnect
 
-GET  /api/permissions/my          — get own permissions
-GET  /api/permissions/{userId}    — get user's permissions
-POST /api/permissions/{userId}    — save user's permissions
+GET  /permissions/my          — get own permissions
+GET  /permissions/{userId}    — get user's permissions
+POST /permissions/{userId}    — save user's permissions
 
-GET  /api/notifications           — get all notifications
-GET  /api/notifications/unread-count
-POST /api/notifications/mark-all-read
-DELETE /api/notifications/{id}
+GET  /notifications           — get all notifications
+GET  /notifications/unread-count
+POST /notifications/mark-all-read
+DELETE /notifications/{id}
 
-GET  /api/dashboard/risk/summary?accountId=
-GET  /api/dashboard/risk/daily-pnl?accountId=
-GET  /api/dashboard/signals/today?accountId=
-GET  /api/dashboard/trades/today?accountId=
-GET  /api/dashboard/positions?accountId=
-GET  /api/dashboard/market/levels?accountId=&index=&liveOpenPrice=
+GET  /dashboard/risk/summary?accountId=
+GET  /dashboard/risk/daily-pnl?accountId=
+GET  /dashboard/signals/today?accountId=
+GET  /dashboard/trades/today?accountId=
+GET  /dashboard/positions?accountId=
+GET  /dashboard/market/levels?accountId=&index=&liveOpenPrice=
 
-GET  /api/admin/strategy-settings/account/{accountId}/index/{index}
-PUT  /api/admin/strategy-settings/{id}
-PATCH /api/admin/strategy-settings/{id}/auto-trading?enabled=
+GET  /admin/strategy-settings/account/{accountId}/index/{index}
+PUT  /admin/strategy-settings/{id}
+PATCH /admin/strategy-settings/{id}/auto-trading?enabled=
 
-GET  /api/test/angelone/login
-GET  /api/test/angelone/funds
-GET  /api/test/angelone/orders
-GET  /api/test/angelone/quote?exchange=&token=&mode=
+GET  /test/angelone/login
+GET  /test/angelone/funds
+GET  /test/angelone/orders
+GET  /test/angelone/quote?exchange=&token=&mode=
 ```
 
 ## Security Config
 Public routes (no JWT needed):
-- POST /api/auth/login, /api/auth/register
-- /api/test/**
-- /api/broker/**
-- /api/admin/broker/**
-- /api/permissions/**
+- POST /auth/login, /auth/register
+- /test/**
+- /broker/**
+- /admin/broker/**
+- /permissions/**
 - OPTIONS /**
 
 All other routes require valid JWT Bearer token.

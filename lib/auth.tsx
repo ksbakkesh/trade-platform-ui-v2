@@ -71,7 +71,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
       return
     }
     try {
-      const res = await fetch(`${API}/api/permissions/my`, {
+      const res = await fetch(`${API}/permissions/my`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.ok) {
@@ -84,7 +84,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
 
   const fetchBroker = async (token: string) => {
     try {
-      const res = await fetch(`${API}/api/broker/my-account`, {
+      const res = await fetch(`${API}/broker/my-account`, {
         headers: { Authorization: `Bearer ${token}` }
       })
       if (res.ok) {
@@ -109,7 +109,7 @@ export function AuthProvider({ children }: { children: React.ReactNode }) {
   }, [])
 
   const login = async (email: string, password: string) => {
-    const res = await fetch(`${API}/api/auth/login`, {
+    const res = await fetch(`${API}/auth/login`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify({ email, password })

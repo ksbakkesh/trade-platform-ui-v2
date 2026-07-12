@@ -38,7 +38,7 @@ export default function SignalsPage() {
     setLoading(true)
     try {
       const res = await fetch(
-        `${API}/api/dashboard/signals/today?accountId=${getAccountId()}`,
+        `${API}/dashboard/signals/today?accountId=${getAccountId()}`,
         { headers: getAuthHeaders() }
       )
       if (res.ok) {

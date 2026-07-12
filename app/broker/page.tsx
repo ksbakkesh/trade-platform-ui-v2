@@ -87,7 +87,7 @@ export default function BrokerSetupPage() {
   const fetchConnected = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/broker/my-account`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         setConnected(data)
@@ -104,7 +104,7 @@ export default function BrokerSetupPage() {
     e.preventDefault()
     setError(''); setSaving(true)
     try {
-      const res = await fetch(`${API}/api/broker/connect/angel-one`, {
+      const res = await fetch(`${API}/broker/connect/angel-one`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(form)
@@ -122,7 +122,7 @@ export default function BrokerSetupPage() {
   const handleTest = async () => {
     setError(''); setTesting(true)
     try {
-      const res = await fetch(`${API}/api/broker/test-connection`, {
+      const res = await fetch(`${API}/broker/test-connection`, {
         method: 'POST', headers: getAuthHeaders()
       })
       const data = await res.json()
@@ -135,7 +135,7 @@ export default function BrokerSetupPage() {
 
   const handleDisconnect = async () => {
     if (!window.confirm('Disconnect Angel One? Auto-trading will stop.')) return
-    await fetch(`${API}/api/broker/disconnect`, { method: 'DELETE', headers: getAuthHeaders() })
+    await fetch(`${API}/broker/disconnect`, { method: 'DELETE', headers: getAuthHeaders() })
     setConnected(null)
     setSuccess('Broker disconnected.')
   }

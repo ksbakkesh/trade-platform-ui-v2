@@ -46,7 +46,7 @@ export default function OrdersPage() {
     setLoading(true)
     setError('')
     try {
-      const res = await fetch(`${API}/api/test/angelone/orders`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/test/angelone/orders`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         setOrders(Array.isArray(data) ? data : [])

@@ -56,7 +56,7 @@ export default function TradeHistoryPage() {
     setLoading(true)
     try {
       const res = await fetch(
-        `${API}/api/dashboard/trades/today?accountId=${getAccountId()}`,
+        `${API}/dashboard/trades/today?accountId=${getAccountId()}`,
         { headers: getAuthHeaders() }
       )
       if (res.ok) {

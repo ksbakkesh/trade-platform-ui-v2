@@ -59,7 +59,7 @@ export interface Position {
   unrealizedPnl?: number | null
   slMovedToCost?: boolean
   lastUpdatedAt?: string
-  // Raw broker fields returned by /api/dashboard/live-positions
+  // Raw broker fields returned by /dashboard/live-positions
   tradingsymbol?: string
   netqty?: string
   ltp?: string
@@ -86,15 +86,15 @@ export interface StrategySettings {
 }
 
 export const api = {
-  riskSummary: () => get<RiskSummary>(`/api/dashboard/risk/summary?accountId=${getAccountId()}`),
-  todayTrades: () => get<Trade[]>(`/api/dashboard/trades/today?accountId=${getAccountId()}`),
-  positions:   () => get<Position[]>(`/api/dashboard/live-positions`),
+  riskSummary: () => get<RiskSummary>(`/dashboard/risk/summary?accountId=${getAccountId()}`),
+  todayTrades: () => get<Trade[]>(`/dashboard/trades/today?accountId=${getAccountId()}`),
+  positions:   () => get<Position[]>(`/dashboard/live-positions`),
   gannLevels:  (index: string, openPrice: number) =>
-    get<GannLevels>(`/api/dashboard/market/levels?accountId=${getAccountId()}&index=${index}&liveOpenPrice=${openPrice}`),
+    get<GannLevels>(`/dashboard/market/levels?accountId=${getAccountId()}&index=${index}&liveOpenPrice=${openPrice}`),
   strategySettings: (index: string) =>
-    get<StrategySettings>(`/api/admin/strategy-settings/account/${getAccountId()}/index/${index}`),
+    get<StrategySettings>(`/admin/strategy-settings/account/${getAccountId()}/index/${index}`),
   toggleAutoTrading: (settingsId: number, enabled: boolean) =>
-    patch<StrategySettings>(`/api/admin/strategy-settings/${settingsId}/auto-trading?enabled=${enabled}`),
+    patch<StrategySettings>(`/admin/strategy-settings/${settingsId}/auto-trading?enabled=${enabled}`),
 }
 
 export function saveBrokerAccountId(id: number) {

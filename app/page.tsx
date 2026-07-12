@@ -23,7 +23,7 @@ export default function Dashboard() {
   useEffect(() => {
     const loadOpenPrices = async () => {
       try {
-        const res = await fetch(`${API}/api/open-price/today`, { headers: getAuthHeaders() })
+        const res = await fetch(`${API}/open-price/today`, { headers: getAuthHeaders() })
         if (res.ok) {
           const data = await res.json()
           if (data.nifty?.openPrice) setNiftyOpen(String(data.nifty.openPrice))
@@ -53,11 +53,11 @@ export default function Dashboard() {
       
       const [riskData, tradesData, posData, fundsData] = await Promise.allSettled([
         api.riskSummary(), api.todayTrades(), api.positions(),
-        fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() })
+        fetch(`${API}/dashboard/funds`, { headers: getAuthHeaders() })
           .then(r => r.json())
           .catch(() => 
             new Promise(resolve => setTimeout(resolve, 2000))
-              .then(() => fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()))
+              .then(() => fetch(`${API}/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()))
           ),
       ])
       if (riskData.status === 'fulfilled') setRisk(riskData.value)
@@ -65,20 +65,20 @@ export default function Dashboard() {
       if (posData.status === 'fulfilled') setPositions(posData.value)
       if (fundsData.status === 'fulfilled' && fundsData.value?.availablecash) setFunds(fundsData.value)
       try {
-        const q = await fetch(`${API}/api/dashboard/quote?exchange=NSE&token=26000&mode=LTP`, { headers: getAuthHeaders() }).then(r => r.json())
+        const q = await fetch(`${API}/dashboard/quote?exchange=NSE&token=26000&mode=LTP`, { headers: getAuthHeaders() }).then(r => r.json())
         if (q.fetched?.[0]?.ltp) setNiftyLtp(q.fetched[0].ltp)
       } catch {}
       if (niftyOpen && parseFloat(niftyOpen) > 1000) {
         try {
           const accountId = localStorage.getItem('tp_broker') || '1'
-          const g = await fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=NIFTY&liveOpenPrice=${niftyOpen}`, { headers: getAuthHeaders() }).then(r => r.json())
+          const g = await fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=NIFTY&liveOpenPrice=${niftyOpen}`, { headers: getAuthHeaders() }).then(r => r.json())
           if (g.buyAbove) setNiftyGann(g)
         } catch {}
       }
       if (sensexOpen && parseFloat(sensexOpen) > 10000) {
         try {
           const accountId = localStorage.getItem('tp_broker') || '1'
-          const g = await fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=SENSEX&liveOpenPrice=${sensexOpen}`, { headers: getAuthHeaders() }).then(r => r.json())
+          const g = await fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=SENSEX&liveOpenPrice=${sensexOpen}`, { headers: getAuthHeaders() }).then(r => r.json())
           if (g.buyAbove) setSensexGann(g)
         } catch {}
       }

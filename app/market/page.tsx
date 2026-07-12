@@ -25,8 +25,8 @@ export default function MarketOverviewPage() {
     setLoading(true)
     try {
       const [nRes, sRes] = await Promise.all([
-        fetch(`${API}/api/test/angelone/quote?exchange=NSE&token=99926000&mode=FULL`, { headers: getAuthHeaders() }),
-        fetch(`${API}/api/test/angelone/quote?exchange=BSE&token=1&mode=FULL`, { headers: getAuthHeaders() }),
+        fetch(`${API}/test/angelone/quote?exchange=NSE&token=99926000&mode=FULL`, { headers: getAuthHeaders() }),
+        fetch(`${API}/test/angelone/quote?exchange=BSE&token=1&mode=FULL`, { headers: getAuthHeaders() }),
       ])
       if (nRes.ok) {
         const d = await nRes.json()

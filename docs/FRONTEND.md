@@ -53,7 +53,7 @@ riskManagement, fundsMargin, brokerSetup, strategySettings, configuration,
 logs, reports, userManagement
 
 ADMIN role always gets all permissions (no DB lookup needed).
-USER/VIEWER role fetches permissions from /api/permissions/my.
+USER/VIEWER role fetches permissions from /permissions/my.
 
 ## Key Patterns
 - `getAuthHeaders()` — returns {Authorization: "Bearer <token>"} from localStorage

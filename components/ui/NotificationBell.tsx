@@ -15,26 +15,26 @@ export default function NotificationBell() {
 
   const fetchCount = async () => {
     try {
-      const res = await fetch(`${API}/api/notifications/unread-count`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/notifications/unread-count`, { headers: getAuthHeaders() })
       if (res.ok) { const d = await res.json(); setUnreadCount(d.count) }
     } catch {}
   }
 
   const fetchAll = async () => {
     try {
-      const res = await fetch(`${API}/api/notifications`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/notifications`, { headers: getAuthHeaders() })
       if (res.ok) setNotifications(await res.json())
     } catch {}
   }
 
   const markAllRead = async () => {
-    await fetch(`${API}/api/notifications/mark-all-read`, { method: 'POST', headers: getAuthHeaders() })
+    await fetch(`${API}/notifications/mark-all-read`, { method: 'POST', headers: getAuthHeaders() })
     setUnreadCount(0)
     setNotifications(p => p.map(n => ({ ...n, isRead: true })))
   }
 
   const deleteOne = async (id: number) => {
-    await fetch(`${API}/api/notifications/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
+    await fetch(`${API}/notifications/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
     setNotifications(p => p.filter(n => n.id !== id))
   }
 

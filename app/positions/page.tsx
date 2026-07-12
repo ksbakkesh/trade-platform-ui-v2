@@ -33,7 +33,7 @@ export default function PositionsPage() {
   const fetchPositions = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/dashboard/live-positions`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/dashboard/live-positions`, { headers: getAuthHeaders() })
       if (res.ok) {
         const data = await res.json()
         setPositions(Array.isArray(data) ? data : [])

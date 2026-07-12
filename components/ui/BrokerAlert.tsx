@@ -14,7 +14,7 @@ export default function BrokerAlert() {
     const brokerId = localStorage.getItem('tp_broker')
     if (brokerId) { setHasBroker(true); return }
 
-    fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
+    fetch(`${API}/broker/my-account`, { headers: getAuthHeaders() })
       .then(r => {
         if (r.ok) { setHasBroker(true) }
         else if (r.status === 404) { setHasBroker(false) }

@@ -64,8 +64,8 @@ export default function StrategySettingsPage() {
     try {
       const accountId = getAccountId()
       const [n, s] = await Promise.all([
-        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${accountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${accountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       setNifty(n)
       setSensex(s)
@@ -102,7 +102,7 @@ export default function StrategySettingsPage() {
         fixedLots: current.fixedLots,
         autoTradingEnabled: current.autoTradingEnabled,
       }
-      const res = await fetch(`${API}/api/admin/strategy-settings/${current.id}`, {
+      const res = await fetch(`${API}/admin/strategy-settings/${current.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(payload)

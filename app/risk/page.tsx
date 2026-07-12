@@ -42,8 +42,8 @@ export default function RiskManagementPage() {
     try {
       const accountId = getAccountId()
       const [riskRes, pnlRes] = await Promise.allSettled([
-        fetch(`${API}/api/dashboard/risk/summary?accountId=${accountId}`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/dashboard/risk/daily-pnl?accountId=${accountId}`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/dashboard/risk/summary?accountId=${accountId}`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/dashboard/risk/daily-pnl?accountId=${accountId}`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       if (riskRes.status === 'fulfilled') setRisk(riskRes.value)
       if (pnlRes.status === 'fulfilled') setPnl(pnlRes.value)

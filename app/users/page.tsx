@@ -48,7 +48,7 @@ export default function UsersPage() {
   const fetchUsers = async () => {
     setLoading(true)
     try {
-      const res = await fetch(`${API}/api/admin/users`, { headers: getAuthHeaders() })
+      const res = await fetch(`${API}/admin/users`, { headers: getAuthHeaders() })
       if (res.ok) setUsers(await res.json())
     } catch {}
     finally { setLoading(false) }
@@ -59,14 +59,14 @@ export default function UsersPage() {
   const handleCreate = async () => {
     setError(''); setSaving(true)
     try {
-      const userRes = await fetch(`${API}/api/auth/register`, {
+      const userRes = await fetch(`${API}/auth/register`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(form)
       })
       if (!userRes.ok) { const d = await userRes.json(); throw new Error(d.error || 'Failed to create user') }
       const newUser = await userRes.json()
-      await fetch(`${API}/api/permissions/${newUser.userId}`, {
+      await fetch(`${API}/permissions/${newUser.userId}`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(perms)
@@ -81,7 +81,7 @@ export default function UsersPage() {
 
   const handleDelete = async (id: number) => {
     if (!window.confirm('Delete this user? This will remove all their data.')) return
-    await fetch(`${API}/api/auth/users/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
+    await fetch(`${API}/auth/users/${id}`, { method: 'DELETE', headers: getAuthHeaders() })
     fetchUsers()
   }
 
@@ -302,7 +302,7 @@ function EditUser({ user, onSaved }: { user: User; onSaved: () => void }) {
     try {
       const body: any = { username: form.username, email: form.email, role: form.role }
       if (form.password) body.password = form.password
-      const res = await fetch(`${API}/api/admin/users/${user.id}`, {
+      const res = await fetch(`${API}/admin/users/${user.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(body)
@@ -367,13 +367,13 @@ function PermissionsEditor({ userId }: { userId: number }) {
   const [saved, setSaved] = useState(false)
 
   useEffect(() => {
-    fetch(`${API}/api/permissions/${userId}`, { headers: getAuthHeaders() })
+    fetch(`${API}/permissions/${userId}`, { headers: getAuthHeaders() })
       .then(r => r.ok ? r.json() : null).then(d => { if (d) setPerms(d) })
   }, [userId])
 
   const save = async () => {
     setSaving(true)
-    await fetch(`${API}/api/permissions/${userId}`, {
+    await fetch(`${API}/permissions/${userId}`, {
       method: 'POST',
       headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
       body: JSON.stringify(perms)
@@ -431,7 +431,7 @@ function BrokerConnector({ userId, username }: { userId: number; username: strin
   const [isEditing, setIsEditing] = useState(false)
 
   useEffect(() => {
-    fetch(`${API}/api/admin/broker/${userId}`, { headers: getAuthHeaders() })
+    fetch(`${API}/admin/broker/${userId}`, { headers: getAuthHeaders() })
       .then(r => r.ok ? r.json() : null)
       .then(d => { if (d) setConnected(d) })
       .catch(() => {})
@@ -440,7 +440,7 @@ function BrokerConnector({ userId, username }: { userId: number; username: strin
   const handleConnect = async () => {
     setError(''); setSuccess(''); setSaving(true)
     try {
-      const res = await fetch(`${API}/api/admin/broker/${userId}/connect`, {
+      const res = await fetch(`${API}/admin/broker/${userId}/connect`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(form)
@@ -461,7 +461,7 @@ function BrokerConnector({ userId, username }: { userId: number; username: strin
   const handleTest = async () => {
     setTesting(true); setTestResult(null)
     try {
-      const res = await fetch(`${API}/api/admin/broker/${userId}/test`, {
+      const res = await fetch(`${API}/admin/broker/${userId}/test`, {
         method: 'POST', headers: getAuthHeaders()
       })
       const d = await res.json()
@@ -472,7 +472,7 @@ function BrokerConnector({ userId, username }: { userId: number; username: strin
 
   const handleDisconnect = async () => {
     if (!window.confirm(`Disconnect ${username}'s Angel One account?`)) return
-    await fetch(`${API}/api/admin/broker/${userId}/disconnect`, { method: 'DELETE', headers: getAuthHeaders() })
+    await fetch(`${API}/admin/broker/${userId}/disconnect`, { method: 'DELETE', headers: getAuthHeaders() })
     setConnected(null)
     setSuccess('')
   }

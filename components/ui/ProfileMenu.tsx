@@ -33,7 +33,7 @@ export default function ProfileMenu() {
   const saveProfile = async () => {
     setProfileSaving(true); setProfileMsg(null)
     try {
-      const res = await fetch(`${API}/api/auth/profile`, {
+      const res = await fetch(`${API}/auth/profile`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ username: profile.username, email: profile.email })
@@ -50,7 +50,7 @@ export default function ProfileMenu() {
     if (pwd.newPwd.length < 6) { setPwdMsg({ ok: false, msg: 'Password must be at least 6 characters' }); return }
     setPwdSaving(true); setPwdMsg(null)
     try {
-      const res = await fetch(`${API}/api/auth/change-password`, {
+      const res = await fetch(`${API}/auth/change-password`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ currentPassword: pwd.current, newPassword: pwd.newPwd })

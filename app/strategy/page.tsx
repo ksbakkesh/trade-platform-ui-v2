@@ -22,7 +22,7 @@ export default function StrategySetupPage() {
   const loadData = useCallback(async () => {
     setLoading(true)
     try {
-      const brokerRes = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
+      const brokerRes = await fetch(`${API}/broker/my-account`, { headers: getAuthHeaders() })
       let accId = 1
       if (brokerRes.ok) {
         const broker = await brokerRes.json()
@@ -30,9 +30,9 @@ export default function StrategySetupPage() {
         setAccountId(accId)
       }
       const [fundsRes, niftyRes, sensexRes] = await Promise.allSettled([
-        fetch(`${API}/api/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()),
-        fetch(`${API}/api/admin/strategy-settings/account/${accId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/admin/strategy-settings/account/${accId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()),
+        fetch(`${API}/admin/strategy-settings/account/${accId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${accId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       if (fundsRes.status === 'fulfilled' && fundsRes.value?.availablecash) {
         setFunds(fundsRes.value)
@@ -50,8 +50,8 @@ export default function StrategySetupPage() {
     if (!openPrice || parseFloat(openPrice) < 1000) return
     try {
       const [n, s] = await Promise.all([
-        fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=NIFTY&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
-        fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=SENSEX&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
+        fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=NIFTY&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
+        fetch(`${API}/dashboard/market/levels?accountId=${accountId}&index=SENSEX&liveOpenPrice=${openPrice}`, { headers: getAuthHeaders() }).then(r => r.json()),
       ])
       if (n.buyAbove) setNiftyLevels(n)
       if (s.buyAbove) setSensexLevels(s)
@@ -77,18 +77,18 @@ export default function StrategySetupPage() {
         autoTradingEnabled: true,
       }
       if (niftySettings) {
-        await fetch(`${API}/api/admin/strategy-settings/${niftySettings.id}`, {
+        await fetch(`${API}/admin/strategy-settings/${niftySettings.id}`, {
           method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
           body: JSON.stringify({ ...base, indexName: 'NIFTY', stopLossPoints: 100, target1Points: 160, target2Points: 200 })
         })
       }
       if (sensexSettings) {
-        await fetch(`${API}/api/admin/strategy-settings/${sensexSettings.id}`, {
+        await fetch(`${API}/admin/strategy-settings/${sensexSettings.id}`, {
           method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
           body: JSON.stringify({ ...base, indexName: 'SENSEX', stopLossPoints: 400, target1Points: 640, target2Points: 800 })
         })
       }
-      await fetch(`${API}/api/admin/risk-settings/account/${accountId}`, {
+      await fetch(`${API}/admin/risk-settings/account/${accountId}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ brokerAccountId: accountId, maxTradesPerDay: 2, dailyLossLimit })
       })
