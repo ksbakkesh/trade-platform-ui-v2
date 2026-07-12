@@ -10,6 +10,8 @@ export default function StrategySetupPage() {
   const [niftySettings, setNiftySettings] = useState<any>(null)
   const [sensexSettings, setSensexSettings] = useState<any>(null)
   const [capital, setCapital] = useState('')
+  const [niftyLevels, setNiftyLevels] = useState<any>(null)
+  const [sensexLevels, setSensexLevels] = useState<any>(null)
   const [saving, setSaving] = useState(false)
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
@@ -35,8 +37,28 @@ export default function StrategySetupPage() {
         setFunds(fundsRes.value)
         setCapital(Math.floor(parseFloat(fundsRes.value.availablecash)).toString())
       }
-      if (niftyRes.status === 'fulfilled') setNiftySettings(niftyRes.value)
-      if (sensexRes.status === 'fulfilled') setSensexSettings(sensexRes.value)
+      const niftySet = niftyRes.status === 'fulfilled' ? niftyRes.value : null
+      const sensexSet = sensexRes.status === 'fulfilled' ? sensexRes.value : null
+      if (niftySet) setNiftySettings(niftySet)
+      if (sensexSet) setSensexSettings(sensexSet)
+
+      // Auto-calculate Gann levels from saved weekly open price
+      try {
+        const promises = []
+        if (niftySet?.manualOpenPrice) {
+          promises.push(
+            fetch(`${API}/api/dashboard/market/levels?accountId=${accId}&index=NIFTY&liveOpenPrice=${niftySet.manualOpenPrice}`, { headers: getAuthHeaders() })
+              .then(r => r.ok ? r.json() : null).then(d => { if (d?.ceStrike) setNiftyLevels(d) })
+          )
+        }
+        if (sensexSet?.manualOpenPrice) {
+          promises.push(
+            fetch(`${API}/api/dashboard/market/levels?accountId=${accId}&index=SENSEX&liveOpenPrice=${sensexSet.manualOpenPrice}`, { headers: getAuthHeaders() })
+              .then(r => r.ok ? r.json() : null).then(d => { if (d?.ceStrike) setSensexLevels(d) })
+          )
+        }
+        await Promise.all(promises)
+      } catch {}
     } catch {}
     finally { setLoading(false) }
   }, [])
@@ -174,6 +196,44 @@ export default function StrategySetupPage() {
           </div>
         )}
       </div>
+
+      {(niftyLevels || sensexLevels) && (
+        <div className="card space-y-3">
+          <h2 className="text-data text-sm font-semibold">Today's Strikes</h2>
+          <div className="grid grid-cols-2 gap-3">
+            {niftyLevels && (
+              <div className="p-3 rounded-lg bg-surface-2 space-y-2">
+                <p className="text-blue-400 text-xs font-semibold">NIFTY 50</p>
+                <div className="flex justify-between">
+                  <div className="text-center">
+                    <p className="text-muted text-[10px]">CE Strike</p>
+                    <p className="text-accent font-mono font-bold">{parseFloat(niftyLevels.ceStrike).toLocaleString('en-IN')}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-muted text-[10px]">PE Strike</p>
+                    <p className="text-loss font-mono font-bold">{parseFloat(niftyLevels.peStrike).toLocaleString('en-IN')}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+            {sensexLevels && (
+              <div className="p-3 rounded-lg bg-surface-2 space-y-2">
+                <p className="text-purple-400 text-xs font-semibold">SENSEX</p>
+                <div className="flex justify-between">
+                  <div className="text-center">
+                    <p className="text-muted text-[10px]">CE Strike</p>
+                    <p className="text-accent font-mono font-bold">{parseFloat(sensexLevels.ceStrike).toLocaleString('en-IN')}</p>
+                  </div>
+                  <div className="text-center">
+                    <p className="text-muted text-[10px]">PE Strike</p>
+                    <p className="text-loss font-mono font-bold">{parseFloat(sensexLevels.peStrike).toLocaleString('en-IN')}</p>
+                  </div>
+                </div>
+              </div>
+            )}
+          </div>
+        </div>
+      )}
 
       <div className="card space-y-3">
         <h2 className="text-data text-sm font-semibold">Strategy Status</h2>

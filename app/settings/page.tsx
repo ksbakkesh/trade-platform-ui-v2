@@ -84,8 +84,19 @@ export default function StrategySettingsPage() {
     if (!weeklyOpenPrice || parseFloat(weeklyOpenPrice) < 1000) return
     try {
       const accountId = getAccountId()
+      // Calculate Gann levels
       const res = await fetch(`${API}/api/dashboard/market/levels?accountId=${accountId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() })
       if (res.ok) setGannLevels(await res.json())
+
+      // Save open price to strategy settings
+      const current = activeTab === 'NIFTY' ? nifty : sensex
+      if (current) {
+        await fetch(`${API}/api/admin/strategy-settings/${current.id}/open-price?mode=MANUAL&price=${weeklyOpenPrice}`, {
+          method: 'PATCH',
+          headers: { ...getAuthHeaders() }
+        })
+        fetchSettings()
+      }
     } catch {}
   }
 
