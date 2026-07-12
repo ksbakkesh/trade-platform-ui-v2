@@ -60,7 +60,7 @@ export default function StrategySettingsPage() {
   const fetchSettings = async () => {
     setLoading(true)
     try {
-      let accId = accountId
+      let accId: number = accountId
       try {
         const brokerRes = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
         if (brokerRes.ok) { const b = await brokerRes.json(); accId = b.id; setAccountId(b.id) }
