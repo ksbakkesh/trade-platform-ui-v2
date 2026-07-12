@@ -62,12 +62,12 @@ export default function StrategySettingsPage() {
     try {
       let resolvedAccountId: number = accountId
       try {
-        const brokerRes = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
+        const brokerRes = await fetch(`${API}/broker/my-account`, { headers: getAuthHeaders() })
         if (brokerRes.ok) { const b = await brokerRes.json(); resolvedAccountId = b.id; setAccountId(b.id) }
       } catch {}
       const [n, s] = await Promise.all([
-        fetch(`${API}/api/admin/strategy-settings/account/${resolvedAccountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/admin/strategy-settings/account/${resolvedAccountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${resolvedAccountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${resolvedAccountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       setNifty(n)
       setSensex(s)
@@ -85,13 +85,13 @@ export default function StrategySettingsPage() {
     try {
       const accId = accountId
       // Calculate Gann levels
-      const res = await fetch(`${API}/api/dashboard/market/levels?accountId=${accId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() }).then(r => { console.log('levels status:', r.status); return r })
+      const res = await fetch(`${API}/dashboard/market/levels?accountId=${accId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() }).then(r => { console.log('levels status:', r.status); return r })
       if (res.ok) setGannLevels(await res.json())
 
       // Save open price to strategy settings
       const current = activeTab === 'NIFTY' ? nifty : sensex
       if (current) {
-        await fetch(`${API}/api/admin/strategy-settings/${current.id}/open-price?mode=MANUAL&price=${weeklyOpenPrice}`, {
+        await fetch(`${API}/admin/strategy-settings/${current.id}/open-price?mode=MANUAL&price=${weeklyOpenPrice}`, {
           method: 'PATCH',
           headers: { ...getAuthHeaders() }
         })
@@ -124,7 +124,7 @@ export default function StrategySettingsPage() {
         fixedLots: current.fixedLots,
         autoTradingEnabled: current.autoTradingEnabled,
       }
-      const res = await fetch(`${API}/api/admin/strategy-settings/${current.id}`, {
+      const res = await fetch(`${API}/admin/strategy-settings/${current.id}`, {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify(payload)
