@@ -60,15 +60,14 @@ export default function StrategySettingsPage() {
   const fetchSettings = async () => {
     setLoading(true)
     try {
-      let accId: number = accountId
+      let resolvedAccountId: number = accountId
       try {
         const brokerRes = await fetch(`${API}/api/broker/my-account`, { headers: getAuthHeaders() })
-        if (brokerRes.ok) { const b = await brokerRes.json(); accId = b.id; setAccountId(b.id) }
+        if (brokerRes.ok) { const b = await brokerRes.json(); resolvedAccountId = b.id; setAccountId(b.id) }
       } catch {}
-      const accountId = accId
       const [n, s] = await Promise.all([
-        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/admin/strategy-settings/account/${accountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/api/admin/strategy-settings/account/${resolvedAccountId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/api/admin/strategy-settings/account/${resolvedAccountId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       setNifty(n)
       setSensex(s)
