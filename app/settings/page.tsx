@@ -85,7 +85,7 @@ export default function StrategySettingsPage() {
     try {
       const accId = accountId
       // Calculate Gann levels
-      const res = await fetch(`${API}/dashboard/market/levels?accountId=${accId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() }).then(r => { console.log('levels status:', r.status); return r })
+      const res = await fetch(`${API}/dashboard/market/levels?accountId=${accId}&index=${activeTab}&liveOpenPrice=${weeklyOpenPrice}`, { headers: getAuthHeaders() })
       if (res.ok) setGannLevels(await res.json())
 
       // Save open price to strategy settings
