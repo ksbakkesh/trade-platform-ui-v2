@@ -86,6 +86,8 @@ export default function Dashboard() {
     } finally { setLoading(false) }
   }, [niftyOpen, sensexOpen])
 
+  useEffect(() => { setTimeout(() => refresh(), 1500) }, [refresh])
+
   const totalPnl = trades.reduce((sum, t) => sum + (t.realizedPnl || 0), 0)
   const openTrades = trades.filter(t => t.status === 'OPEN' || t.status === 'PARTIALLY_CLOSED')
 
