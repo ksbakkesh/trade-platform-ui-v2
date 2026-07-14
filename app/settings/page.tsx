@@ -95,6 +95,12 @@ export default function StrategySettingsPage() {
           method: 'PATCH',
           headers: { ...getAuthHeaders() }
         })
+        // Broadcast open price to all client accounts
+        await fetch(`${API}/open-price/broadcast`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
+          body: JSON.stringify({ indexName: activeTab, openPrice: parseFloat(weeklyOpenPrice) })
+        })
       }
     } catch {}
   }
