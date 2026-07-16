@@ -32,8 +32,8 @@ export default function StrategySetupPage() {
       }
       const [fundsRes, niftyRes, sensexRes] = await Promise.allSettled([
         fetch(`${API}/dashboard/funds`, { headers: getAuthHeaders() }).then(r => r.json()),
-        fetch(`${API}/api/admin/strategy-settings/account/${accId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
-        fetch(`${API}/api/admin/strategy-settings/account/${accId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${accId}/index/NIFTY`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
+        fetch(`${API}/admin/strategy-settings/account/${accId}/index/SENSEX`, { headers: getAuthHeaders() }).then(r => r.ok ? r.json() : null),
       ])
       if (fundsRes.status === 'fulfilled' && fundsRes.value?.availablecash) {
         setFunds(fundsRes.value)
@@ -70,7 +70,7 @@ export default function StrategySetupPage() {
   const toggleAutoTrading = async (enable: boolean) => {
     setTrading(true)
     try {
-      const res = await fetch(`${API}/api/trade/${enable ? 'start' : 'stop'}`, {
+      const res = await fetch(`${API}/trade/${enable ? 'start' : 'stop'}`, {
         method: 'POST', headers: getAuthHeaders()
       })
       const data = await res.json()
@@ -100,18 +100,18 @@ export default function StrategySetupPage() {
         autoTradingEnabled: true,
       }
       if (niftySettings) {
-        await fetch(`${API}/api/admin/strategy-settings/${niftySettings.id}`, {
+        await fetch(`${API}/admin/strategy-settings/${niftySettings.id}`, {
           method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
           body: JSON.stringify({ ...base, indexName: 'NIFTY', stopLossPoints: 100, target1Points: 160, target2Points: 200 })
         })
       }
       if (sensexSettings) {
-        await fetch(`${API}/api/admin/strategy-settings/${sensexSettings.id}`, {
+        await fetch(`${API}/admin/strategy-settings/${sensexSettings.id}`, {
           method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
           body: JSON.stringify({ ...base, indexName: 'SENSEX', stopLossPoints: 400, target1Points: 640, target2Points: 800 })
         })
       }
-      await fetch(`${API}/api/admin/risk-settings/account/${accountId}`, {
+      await fetch(`${API}/admin/risk-settings/account/${accountId}`, {
         method: 'PUT', headers: { 'Content-Type': 'application/json', ...getAuthHeaders() },
         body: JSON.stringify({ brokerAccountId: accountId, maxTradesPerDay: 2, dailyLossLimit })
       })
