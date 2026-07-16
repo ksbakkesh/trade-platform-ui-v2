@@ -253,15 +253,31 @@ export default function StrategySetupPage() {
 
       {/* Trading Controls */}
       <div className="card space-y-3">
-        <h2 className="text-data text-sm font-semibold">Trading Controls</h2>
-        {tradeMsg && <p className="text-accent text-xs">{tradeMsg}</p>}
+        <div className="flex items-center justify-between">
+          <h2 className="text-data text-sm font-semibold">Trading Controls</h2>
+          <div className="flex items-center gap-2">
+            <div className={`w-2 h-2 rounded-full ${niftySettings?.autoTradingEnabled ? 'bg-accent animate-pulse' : 'bg-loss'}`} />
+            <span className={`text-xs font-medium ${niftySettings?.autoTradingEnabled ? 'text-accent' : 'text-loss'}`}>
+              {niftySettings?.autoTradingEnabled ? 'ACTIVE' : 'STOPPED'}
+            </span>
+          </div>
+        </div>
+        {tradeMsg && <p className="text-accent text-xs font-medium">{tradeMsg}</p>}
         <div className="grid grid-cols-2 gap-3">
-          <button onClick={() => toggleAutoTrading(true)} disabled={trading}
-            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-accent text-bg text-sm font-semibold hover:bg-accent/90 disabled:opacity-50">
+          <button onClick={() => toggleAutoTrading(true)} 
+            disabled={trading || niftySettings?.autoTradingEnabled}
+            className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-colors
+              ${niftySettings?.autoTradingEnabled 
+                ? 'bg-accent/20 border border-accent/30 text-accent cursor-not-allowed' 
+                : 'bg-accent text-bg hover:bg-accent/90'} disabled:opacity-60`}>
             ▶ Start Auto-Trading
           </button>
-          <button onClick={() => toggleAutoTrading(false)} disabled={trading}
-            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-loss/20 border border-loss/40 text-loss text-sm font-semibold hover:bg-loss/30 disabled:opacity-50">
+          <button onClick={() => toggleAutoTrading(false)} 
+            disabled={trading || !niftySettings?.autoTradingEnabled}
+            className={`flex items-center justify-center gap-2 py-3 rounded-lg text-sm font-semibold transition-colors
+              ${!niftySettings?.autoTradingEnabled 
+                ? 'bg-surface-2 border border-white/10 text-muted cursor-not-allowed' 
+                : 'bg-loss/20 border border-loss/40 text-loss hover:bg-loss/30'} disabled:opacity-60`}>
             ⏹ Stop Auto-Trading
           </button>
         </div>
