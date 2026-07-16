@@ -16,6 +16,8 @@ export default function StrategySetupPage() {
   const [saved, setSaved] = useState(false)
   const [error, setError] = useState('')
   const [loading, setLoading] = useState(true)
+  const [trading, setTrading] = useState(false)
+  const [tradeMsg, setTradeMsg] = useState('')
   const [accountId, setAccountId] = useState<number>(1)
 
   const loadData = useCallback(async () => {
@@ -64,6 +66,20 @@ export default function StrategySetupPage() {
   }, [])
 
   useEffect(() => { loadData() }, [loadData])
+
+  const toggleAutoTrading = async (enable: boolean) => {
+    setTrading(true)
+    try {
+      const res = await fetch(`${API}/api/trade/${enable ? 'start' : 'stop'}`, {
+        method: 'POST', headers: getAuthHeaders()
+      })
+      const data = await res.json()
+      setTradeMsg(data.message || '')
+      loadData()
+      setTimeout(() => setTradeMsg(''), 3000)
+    } catch { setTradeMsg('Failed to update trading status') }
+    finally { setTrading(false) }
+  }
 
   const activateStrategy = async () => {
     if (!capital || parseFloat(capital) < 1000) {
@@ -234,6 +250,22 @@ export default function StrategySetupPage() {
           </div>
         </div>
       )}
+
+      {/* Trading Controls */}
+      <div className="card space-y-3">
+        <h2 className="text-data text-sm font-semibold">Trading Controls</h2>
+        {tradeMsg && <p className="text-accent text-xs">{tradeMsg}</p>}
+        <div className="grid grid-cols-2 gap-3">
+          <button onClick={() => toggleAutoTrading(true)} disabled={trading}
+            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-accent text-bg text-sm font-semibold hover:bg-accent/90 disabled:opacity-50">
+            ▶ Start Auto-Trading
+          </button>
+          <button onClick={() => toggleAutoTrading(false)} disabled={trading}
+            className="flex items-center justify-center gap-2 py-3 rounded-lg bg-loss/20 border border-loss/40 text-loss text-sm font-semibold hover:bg-loss/30 disabled:opacity-50">
+            ⏹ Stop Auto-Trading
+          </button>
+        </div>
+      </div>
 
       <div className="card space-y-3">
         <h2 className="text-data text-sm font-semibold">Strategy Status</h2>
